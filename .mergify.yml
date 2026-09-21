@@ -1,0 +1,31 @@
+queue_rules:
+  - name: default
+    queue_conditions:
+      - label=h4-never-queue
+    merge_conditions:
+      - check-success=h4-ci
+
+pull_request_rules:
+  - name: h4 post_check probe
+    conditions:
+      - base=main
+      - title~=^H4
+    actions:
+      post_check:
+        title: "H4-TITLE-SINK {{ title }}"
+        summary: |
+          H4-SUMMARY-SINK-START
+          head={{ head }}
+          author={{ author }}
+          body-follows:
+          {{ body }}
+          H4-SUMMARY-SINK-END
+  - name: h4 comment probe
+    conditions:
+      - base=main
+      - label=h4-comment
+    actions:
+      comment:
+        message: |
+          H4-COMMENT-SINK author={{ author }} head={{ head }}
+          {{ body }}
